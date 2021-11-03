@@ -1,7 +1,7 @@
 # ELO File Export
 Der Kopiervorgang wird mittels einer CSV - Datei ermöglicht.
 Diese kann durch 2 Wege erstelt werden.
-1. Das 'ELOFileExport.ps1' mit Hilfer der Keasy Datenbankverbindung.xml oder
+1. Das 'ELOFileExport.ps1' erzeugt die Datei selbst und mit Hilfe der Keasy Datenbankverbindung.xml oder
 2. per SQL Management-Studio oder SQLCMD und der *ELO Struktur Export as File.sql*
 
 ## Ablauf:
