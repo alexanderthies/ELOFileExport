@@ -17,7 +17,7 @@ oder das Script ```ELO_Struktur_Export_as_File.sql``` im SQL Management-Studio a
 
 ### 3. PowerShell Script klassisch oder mit ISE ausführen
 
-  **Option 1:** PowerShell öffne, zum Ordner- Pfad der ELOFileExport.ps1 navigieren
+  **Option 1:** PowerShell öffnen, zum Ordner- Pfad der ELOFileExport.ps1 navigieren
   ```ELOFileExport.ps1```, mit den Paramentern  Exportordner und ELO Ordner Id, ausführen 
   z.B.: 
   
