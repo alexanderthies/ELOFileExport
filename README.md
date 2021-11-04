@@ -10,7 +10,7 @@ Diese kann durch 2 Wege erstelt werden.
 2.1. **Wenn** keine Datenbankverbindung.xml vorhanden ist (Ansonsten siehe 3.):
 
 per PowerShell folgende Anweisung ausführen
-```ps
+```
 sqlcmd -S <keasyserver> -d <keasydb> -i "ELO_Struktur_Export_as_File.sql" -o "ELOFileExportData.csv" -h-1 -s";    
 ```
 oder das Script ```ELO_Struktur_Export_as_File.sql``` im SQL Management-Studio ausführen und die Ergebnismenge mit Spalten-Info als ```ELOFileExportData.csv``` speichern
