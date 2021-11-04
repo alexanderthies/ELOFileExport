@@ -1,36 +1,125 @@
-##sqlcmd -S sqlinstance -d database -i "SQL-Script ELO Struktur Export as File (mit Hilfe Keasy ELO Migration).sql" -o "ELOFileExportData.csv" -h-1 -s";"
+param($p1, $p2)
+
+##--Option 1 - Über ISE
+ 
+
+#--Exportordner Pfad angeben!
+$Zielpfad = "C:\vfm\EXPORT";
+#------------^^
+
+#-- ID des gewünschten ELO Ordners angeben!
+$OrdnerId = 0;
+#----------^^
+
+
+# Jetzt |> "Skript ausführen" oder F5 betätigen  
+
+##--Option 2
+
+# ODER ps1 über PowerShell mit Parameter aufrufen
+# .\ELOFileExport.ps1 "C:\\vfm\EXPORT" 70681
+
+if ($p1 -eq $null -And $p2 -eq $null)
+{
+  echo x;
+}
+else
+{
+  $Zielpfad = $p1;
+  $OrdnerId=  $p2;
+}
+
+write-host ("Exportordner: "+ $Zielpfad ) -ForegroundColor Green
+
+if ($OrdnerId -eq 0)
+{
+  write-host ("OrdnerId wurde nicht angegeben!") -ForegroundColor Red
+  return;
+}
+
+$ELOFileExportData = "ELOFileExportData.csv"    
+$sqlscript = "sp_CreateExport_List.sql";
 
 echo 'Datenbankinfo laden'
 If ((Test-Path "DatenbankVerbindung.xml") -eq $true)
 {
+    If ((Test-Path $sqlscript) -eq $false)
+    {
+      write-host ($sqlscript +" wurde nicht gefunden." ) -ForegroundColor Red
+      return;
+    }
+     
     $conn = Select-Xml -Path DatenbankVerbindung.xml -XPath 'xml/DatabaseConnection' | ForEach-Object { $_.Node.InnerXML }
     $connectionsstring = '';
     try { $connectionsstring = [Convert]::FromBase64String("$conn ")}
     catch { $connectionsstring = $conn; }
 
-    echo  'ELO Struktur Export - Script ausführen und als CSV speichern'
-
-    $sqlscript = "SQL-Script ELO Struktur Export as File (mit Hilfe Keasy ELO Migration).sql";
-    If ((Test-Path $sqlscript) -eq $false)
-    {
-      write-host ($sqlscript +" wurde nicht gefunden." ) -ForegroundColor Red
+    if ($connectionsstring -eq "")
+    {    
+        write-host "Connectionstring ist leer!" -ForegroundColor Red
+        Return;
     }
 
-    Invoke-Sqlcmd -connectionstring $connectionsstring -InputFile "SQL-Script ELO Struktur Export as File (mit Hilfe Keasy ELO Migration).sql" |
-    Export-Csv -NoTypeInformation `
-               -Path "ELOFileExportData.csv" `
-               -Encoding UTF8
 
-    echo 'ELOFileExportData.csv gespeichert'
+    $Connection = New-Object System.Data.SQLClient.SQLConnection
+    $Connection.ConnectionString = $connectionsstring
+    $Connection.Open()
+    $command = $Connection.CreateCommand()
+
+    #proc anlegen
+    $sqlquery= Get-Content -Path x.sql
+    $createSP_query = Get-Content sp_CreateExport_List.sql -Raw;
+    $command.CommandText = $createSP_query;
+    $command.ExecuteNonQuery()  | out-null;
+    
+    #proc ausführen
+    echo 'ELO Struktur Export - Script ausführen'
+    $command.CommandType = [System.Data.CommandType]::StoredProcedure
+    $command.CommandText = "dbo.#sp_CreateExport_List";
+
+    $Parameter1 = new-object System.Data.SqlClient.SqlParameter; 
+    $Parameter2 = new-object System.Data.SqlClient.SqlParameter;
+
+    $Parameter1.ParameterName = "@exportfolder";
+    $Parameter1.Value =$Zielpfad; 
+
+    $Parameter2.ParameterName = "@folderid";
+    $Parameter2.Value =$OrdnerId;
+
+    $command.Parameters.Add($Parameter1)  | out-null;
+    $command.Parameters.Add($Parameter2)  | out-null;        
+    
+    $command.ExecuteNonQuery();
+
+    #Ergebnis abfragen
+    $command.CommandType = [System.Data.CommandType]::Text
+    $command.CommandText = "SELECT * FROM ELOFileExport";
+    $result = $command.ExecuteReader();
+    
+    $Datatable = New-Object System.Data.Datatable  
+    $Datatable.Load($result);
+
+    if($Datatable.Rows.Count -lt 0)
+    {
+       write-host "Keine Dateien gefunden!";
+        Return;
+    }
+
+    #Ergebnis speichern
+    echo  'ELOFileExportData.csv erstellen'
+
+    $Datatable | Export-Csv $ELOFileExportData -notypeinformation -Encoding UTF8
+    $connection.Close();     
 }
 ELSE  
   {
      write-host ("Datenbankverbindungs.xml Konnte nicht gefunden werden, bitte SQL Script manuell ausführen oder ") -ForegroundColor DarkYellow
-     write-host ("PowerShell Command: " + 'sqlcmd -S sqlserverinstance -d database -i "SQL-Script ELO Struktur Export as File (mit Hilfe easy ELO Migration).sql" -o "ELOFileExportData.csv" -h-1 -s";"' ) -ForegroundColor DarkCyan
+     # Alternative
+     # sqlcmd -S sqlinstance -d database -i "ELO_Struktur_Export_as_File.sql" -o "ELOFileExportData.csv" -h-1 -s";"
+     write-host ("PowerShell Command: " + 'sqlcmd -S sqlserverinstance -d database -i "ELO_Struktur_Export_as_File.sql" -o "ELOFileExportData.csv" -h-1 -s";"' ) -ForegroundColor DarkCyan
 
   }
 
-$ELOFileExportData = "ELOFileExportData.csv"
 If ((Test-Path $ELOFileExportData) -eq $false)
 {
   write-host ($ELOFileExportData +" wurde nicht gefunden, wurde das Export-Script ausgeführt?" ) -ForegroundColor Red
@@ -38,8 +127,6 @@ If ((Test-Path $ELOFileExportData) -eq $false)
 ELSE
 {
 
-
-    ##$files=Import-CSV -Path  $ELOFileExportData -Header "Source","Directory","Filename", "ObjId" -Delimiter ";" -encoding UTF7
     $files=Import-CSV -Path $ELOFileExportData -Delimiter "," -encoding UTF7
  
     echo (""+$files.Count +" Dateien werden exportiert.")
