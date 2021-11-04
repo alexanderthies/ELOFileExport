@@ -31,7 +31,7 @@ oder das Script ```ELO_Struktur_Export_as_File.sql``` im SQL Management-Studio a
   **Option 2:** 'ELOFileExport.ps1' öffnen (Doppelklick oder mit PowerShell ISE)
     ```$Zielpfad``` und ```$OrdnerId``` angeben
     z.B.: 
-    ```ps
+    ```
     #--Exportordner Pfad angeben!
     $Zielpfad = "C:\\vfm\EXPORT";
     #------------^^
