@@ -25,23 +25,24 @@ oder das Script ```ELO_Struktur_Export_as_File.sql``` im SQL Management-Studio a
   
   und Ausführung abwarten
 
-
 **ODER**
 
   **Option 2:** 'ELOFileExport.ps1' öffnen (Doppelklick oder mit PowerShell ISE)
     ```$Zielpfad``` und ```$OrdnerId``` angeben
     z.B.: 
-    ```
-    #--Exportordner Pfad angeben!
-    $Zielpfad = "C:\\vfm\EXPORT";
-    #------------^^
 
-    #-- ID des gewünschten ELO Ordners angeben!
-    $OrdnerId = 70681;
-    #-----------^^
-    ```
+```
+#--Exportordner Pfad angeben!
+$Zielpfad = "C:\\vfm\EXPORT";
+#------------^^
+
+#-- ID des gewünschten ELO Ordners angeben!
+$OrdnerId = 70681;
+#-----------^^
+```
+    
    Export starten im ISE mit   
     
-    ## ```|> "Skript ausführen" oder F5 betätigen ``` 
+### ```|> "Skript ausführen" oder F5 betätigen ``` 
 
 und Ausführung abwarten   
