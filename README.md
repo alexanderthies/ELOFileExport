@@ -6,7 +6,8 @@ Diese kann durch 2 Wege erstelt werden.
 
 ## Ablauf:
 ### 1. Alle Dateien herunterladen, Zip extrahieren
-Siehe [Releases](https://github.com/vfm/ELOFileExport/releases/tag/1.0.1)
+Siehe [Releases](https://github.com/vfm/ELOFileExport/releases/)
+und [Source Code.zip](https://github.com/vfm/ELOFileExport/archive/refs/tags/1.0.1.zip)
 ### 2. Datenbankverbindung.xml in den gleichen Ordner kopieren
 2.1. **Wenn** keine Datenbankverbindung.xml vorhanden ist (Ansonsten siehe 3.):
 
