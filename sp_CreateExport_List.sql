@@ -152,14 +152,14 @@ BEGIN
 			DELETE FROM #ExportDoks WHERE objid = @objid;
 		END
 		
-		UPDATE ELOFileExport SET Directory = REPLACE([filename],'/','')
-		UPDATE ELOFileExport SET Directory = REPLACE([filename],':','')
-		UPDATE ELOFileExport SET Directory = REPLACE([filename],'*','')
-		UPDATE ELOFileExport SET Directory = REPLACE([filename],'?','')
-		UPDATE ELOFileExport SET Directory = REPLACE([filename],'"','')
-		UPDATE ELOFileExport SET Directory = REPLACE([filename],'<','')
-		UPDATE ELOFileExport SET Directory = REPLACE([filename],'>','')
-		UPDATE ELOFileExport SET Directory = REPLACE([filename],'|','')
+	        UPDATE ELOFileExport SET Directory = REPLACE(Directory,'/','')
+		UPDATE ELOFileExport SET Directory = REPLACE(Directory,':','')
+		UPDATE ELOFileExport SET Directory = REPLACE(Directory,'*','')
+		UPDATE ELOFileExport SET Directory = REPLACE(Directory,'?','')
+		UPDATE ELOFileExport SET Directory = REPLACE(Directory,'"','')
+		UPDATE ELOFileExport SET Directory = REPLACE(Directory,'<','')
+		UPDATE ELOFileExport SET Directory = REPLACE(Directory,'>','')
+		UPDATE ELOFileExport SET Directory = REPLACE(Directory,'|','')
 	
 	
 		SELECT * FROM ELOFileExport
