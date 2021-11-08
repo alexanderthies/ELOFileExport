@@ -127,7 +127,16 @@ BEGIN
 				), 2, 1000) [PATH]
 				FROM Migration_ELODokEbenen MDE  
 				WHERE docobjguid = @docobjectguid)  
-
+				
+			SET @folderpath = REPLACE(@folderpath,'/','')
+			SET @folderpath = REPLACE(@folderpath,':','')
+			SET @folderpath = REPLACE(@folderpath,'*','')
+			SET @folderpath = REPLACE(@folderpath,'?','')
+			SET @folderpath = REPLACE(@folderpath,'"','')
+			SET @folderpath = REPLACE(@folderpath,'<','')
+			SET @folderpath = REPLACE(@folderpath,'>','')
+			SET @folderpath = REPLACE(@folderpath,'|','')
+			
 			-- Filename mit Extension erzeugen und Quell-Pfad holen
 			SELECT 
 			  @filename = CONCAT(iif (len([filename])> 90,SUBSTRING([filename],0,85),[filename]),'_',@objid, '.', [extension]), 
@@ -150,16 +159,8 @@ BEGIN
 				 END
 
 			DELETE FROM #ExportDoks WHERE objid = @objid;
-		END
-		
-	        UPDATE ELOFileExport SET Directory = REPLACE(Directory,'/','')
-		UPDATE ELOFileExport SET Directory = REPLACE(Directory,':','')
-		UPDATE ELOFileExport SET Directory = REPLACE(Directory,'*','')
-		UPDATE ELOFileExport SET Directory = REPLACE(Directory,'?','')
-		UPDATE ELOFileExport SET Directory = REPLACE(Directory,'"','')
-		UPDATE ELOFileExport SET Directory = REPLACE(Directory,'<','')
-		UPDATE ELOFileExport SET Directory = REPLACE(Directory,'>','')
-		UPDATE ELOFileExport SET Directory = REPLACE(Directory,'|','')
+		END	
+	 
 	
 	
 		SELECT * FROM ELOFileExport
