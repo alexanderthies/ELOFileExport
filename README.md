@@ -10,7 +10,7 @@ Permission prüfen
 https://docs.microsoft.com/de-de/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.2
 
 Siehe [Releases](https://github.com/vfm/ELOFileExport/releases/)
-und [Source Code.zip](https://github.com/vfm/ELOFileExport/archive/refs/tags/1.0.1.zip)
+und [Source Code.zip](https://github.com/vfm/ELOFileExport/releases/latest)
 ### 2. Datenbankverbindung.xml in den gleichen Ordner kopieren
 2.1. **Wenn** keine Datenbankverbindung.xml vorhanden ist (Ansonsten siehe 3.):
 
