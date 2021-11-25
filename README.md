@@ -14,12 +14,13 @@ und [ELOFileExport.zip](https://github.com/vfm/ELOFileExport/archive/refs/heads/
 ### 2. Datenbankverbindung.xml in den gleichen Ordner kopieren
 2.1. **Wenn** keine Datenbankverbindung.xml vorhanden ist (Ansonsten siehe 3.):
 2.1.1 PowerShell Poilicies prüfen
+
 Siehe: https://docs.microsoft.com/de-de/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.2
-  Get-Execution -List
+  ```Get-Execution -List```
   Erlauben:
-   Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope LocalMachine
+   ```Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope LocalMachine```
   Zurücksetzen
-   Set-ExecutionPolicy -ExecutionPolicy Default -Scope LocalMachine
+   ```Set-ExecutionPolicy -ExecutionPolicy Default -Scope LocalMachine```
   
 
 per PowerShell folgende Anweisung ausführen
