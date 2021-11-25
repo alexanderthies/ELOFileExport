@@ -17,10 +17,11 @@ und [ELOFileExport.zip](https://github.com/vfm/ELOFileExport/archive/refs/heads/
 
 Siehe: https://docs.microsoft.com/de-de/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.2
   ```Get-Execution -List```
-  Erlauben:
-   ```Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope LocalMachine```
-  Zurücksetzen
-   ```Set-ExecutionPolicy -ExecutionPolicy Default -Scope LocalMachine```
+  
+Erlauben:
+```Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope LocalMachine```
+Zurücksetzen
+```Set-ExecutionPolicy -ExecutionPolicy Default -Scope LocalMachine```
   
 
 per PowerShell folgende Anweisung ausführen
