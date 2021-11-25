@@ -1,12 +1,11 @@
-﻿-- ###############################################################################################################################################################################################################
+-- ###############################################################################################################################################################################################################
 --  Author             : AT
 --  Geändert von       : AT
---  Datum der Änderung : 03.11.2021
+--  Datum der Änderung : 25.11.2021
 --  Mitwirkende        : AT
---  Kompatibilität     : 21.2.5
+--  Kompatibilität     : 21.2.6
 --  Beschreibung       : Temporäre Prozedur anlegen, die ELO Dokumente unterhalb eines Ordners liefert
 -- ###############################################################################################################################################################################################################
-
 CREATE PROCEDURE [dbo].[#sp_CreateExport_List]
 -- Ziel Ordner angeben!
 @exportfolder nvarchar(max),
@@ -48,9 +47,9 @@ BEGIN
 	BEGIN
 	  CREATE TABLE ELOFileExport
 	  (
-		 Source nvarchar(256),
-		 Directory nvarchar(256),
-		 Filename nvarchar(256),
+		 Source nvarchar(max),
+		 Directory nvarchar(max),
+		 Filename nvarchar(max),
 		 ObjId int,
 	  )
 	END
@@ -61,10 +60,10 @@ BEGIN
 	-- Es wird heiss, Variablen deklarieren
 	DECLARE
 			@folderpath nvarchar(max),
-			@copydestination nvarchar(1000),
-			@copydestinationfile nvarchar(1000),
+			@copydestination nvarchar(max),
+			@copydestinationfile nvarchar(max),
 			@filename nvarchar(max),
-			@filesource nvarchar(1000),
+			@filesource nvarchar(max),
 			@fileextension nvarchar(max),
 			@exported bit,
 			@count int = 0,
