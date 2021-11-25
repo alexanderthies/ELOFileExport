@@ -20,6 +20,7 @@ Siehe: https://docs.microsoft.com/de-de/powershell/module/microsoft.powershell.c
   
 Erlauben:
 ```Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope LocalMachine```
+
 Zurücksetzen
 ```Set-ExecutionPolicy -ExecutionPolicy Default -Scope LocalMachine```
   
