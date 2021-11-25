@@ -1,22 +1,22 @@
 param($p1, $p2)
 
-##--Option 1 - Über ISE
+##--Option 1 - Ãœber ISE
  
 
 #--Exportordner Pfad angeben!
 $Zielpfad = "C:\vfm\EXPORT";
 #------------^^
 
-#-- ID des gewünschten ELO Ordners angeben!
+#-- ID des gewÃ¼nschten ELO Ordners angeben!
 $OrdnerId = 0;
 #----------^^
 
 
-# Jetzt |> "Skript ausführen" oder F5 betätigen  
+# Jetzt |> "Skript ausfÃ¼hren" oder F5 betÃ¤tigen  
 
 ##--Option 2
 
-# ODER ps1 über PowerShell mit Parameter aufrufen
+# ODER ps1 Ã¼ber PowerShell mit Parameter aufrufen
 # .\ELOFileExport.ps1 "C:\\vfm\EXPORT" 70681
 
 if ($p1 -eq $null -And $p2 -eq $null)
@@ -67,13 +67,12 @@ If ((Test-Path "DatenbankVerbindung.xml") -eq $true)
     $command = $Connection.CreateCommand()
 
     #proc anlegen
-    $sqlquery= Get-Content -Path x.sql
     $createSP_query = Get-Content sp_CreateExport_List.sql -Raw;
     $command.CommandText = $createSP_query;
     $command.ExecuteNonQuery()  | out-null;
     
-    #proc ausführen
-    echo 'ELO Struktur Export - Script ausführen'
+    #proc ausfÃ¼hren
+    echo 'ELO Struktur Export - Script ausfÃ¼hren'
     $command.CommandType = [System.Data.CommandType]::StoredProcedure
     $command.CommandText = "dbo.#sp_CreateExport_List";
 
@@ -113,7 +112,7 @@ If ((Test-Path "DatenbankVerbindung.xml") -eq $true)
 }
 ELSE  
   {
-     write-host ("Datenbankverbindungs.xml Konnte nicht gefunden werden, bitte SQL Script manuell ausführen oder ") -ForegroundColor DarkYellow
+     write-host ("Datenbankverbindungs.xml Konnte nicht gefunden werden, bitte SQL Script manuell ausfÃ¼hren oder ") -ForegroundColor DarkYellow
      # Alternative
      # sqlcmd -S sqlinstance -d database -i "ELO_Struktur_Export_as_File.sql" -o "ELOFileExportData.csv" -h-1 -s";"
      write-host ("PowerShell Command: " + 'sqlcmd -S sqlserverinstance -d database -i "ELO_Struktur_Export_as_File.sql" -o "ELOFileExportData.csv" -h-1 -s";"' ) -ForegroundColor DarkCyan
@@ -122,7 +121,7 @@ ELSE
 
 If ((Test-Path $ELOFileExportData) -eq $false)
 {
-  write-host ($ELOFileExportData +" wurde nicht gefunden, wurde das Export-Script ausgeführt?" ) -ForegroundColor Red
+  write-host ($ELOFileExportData +" wurde nicht gefunden, wurde das Export-Script ausgefÃ¼hrt?" ) -ForegroundColor Red
 }
 ELSE
 {
@@ -136,7 +135,7 @@ ELSE
     $DestinationFile = ($file.Directory.Trim()+ '\' +$file.Filename.Trim())
     If ($DestinationFile.Length -gt 256)
     {
-        echo "Kürzen";
+        echo "KÃ¼rzen";
        $length = $file.Directory.Trim().Length - 256;
        if ($length -gt (20 + $file.ObjId.Trim().length))
        {  
@@ -149,13 +148,13 @@ ELSE
           }
           else
           {
-             echo ($file.Filename +' wird übersprungen');
+             echo ($file.Filename +' wird Ã¼bersprungen');
              continue;
           }
        }
        else 
        {
-         echo ($file.Filename +' wird übersprungen');
+         echo ($file.Filename +' wird Ã¼bersprungen');
          continue;
        }
     } 
