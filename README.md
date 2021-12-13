@@ -13,7 +13,7 @@ und [ELOFileExport.zip](https://github.com/vfm/ELOFileExport/archive/refs/heads/
 Siehe: https://docs.microsoft.com/de-de/powershell/module/microsoft.powershell.core/about/about_execution_policies?view=powershell-7.2
 PowerShell mit Administratorrechten ausführen
 
-  ```Get-Execution -List```
+  ```Get-ExecutionPolicy -List```
   
 Erlauben:
 ```Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope LocalMachine```
