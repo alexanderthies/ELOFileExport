@@ -65,6 +65,7 @@ If ((Test-Path "DatenbankVerbindung.xml") -eq $true)
     $Connection.ConnectionString = $connectionsstring
     $Connection.Open()
     $command = $Connection.CreateCommand()
+    $command.CommandTimeout = 360
 
     #proc anlegen
     $createSP_query = Get-Content sp_CreateExport_List.sql -Raw;
