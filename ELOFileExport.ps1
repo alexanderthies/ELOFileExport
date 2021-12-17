@@ -75,6 +75,13 @@ If ((Test-Path "DatenbankVerbindung.xml") -eq $true)
     $command = $Connection.CreateCommand()
     $command.CommandTimeout = 360
 
+    if (Test-Path("PreStart.sql"))
+    {    
+      $precmd = Get-Content PreStart.sql -Raw;
+      $command.CommandText = $precmd;
+      $command.ExecuteNonQuery()  | out-null;
+    }
+
     #proc anlegen
     $createSP_query = Get-Content sp_CreateExport_List.sql -Raw;
     $command.CommandText = $createSP_query;
