@@ -28,20 +28,6 @@ BEGIN
 
 	IF (@exportfolder = '' OR @exportfolder = null) 
 	  RAISERROR ('Ziel Ordner wurde nicht angegeben!', 18, 1); 
-   
-	IF NOT EXISTS(SELECT 1 FROM sys.columns WHERE Name = N'exported' AND Object_ID = Object_ID(N'Migration_ELODokumente'))
-	 ALTER TABLE Migration_ELODokumente ADD exported bit;
-
-	IF NOT EXISTS(SELECT 1 FROM sys.columns WHERE Name = N'filename' AND Object_ID = Object_ID(N'Migration_ELODokumente'))
-	  ALTER TABLE Migration_ELODokumente ADD filename nvarchar(max); 
-
-
-	IF NOT EXISTS(SELECT 1 FROM sys.columns WHERE Name = N'extension' AND Object_ID = Object_ID(N'Migration_ELODokumente'))
-	  ALTER TABLE Migration_ELODokumente ADD extension nvarchar(max); 
-
-
-	IF NOT EXISTS(SELECT 1 FROM sys.columns WHERE Name = N'exporterror' AND Object_ID = Object_ID(N'Migration_ELODokumente'))
-	 ALTER TABLE Migration_ELODokumente ADD exporterror bit;
 
 	IF (NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = 'dbo' AND  TABLE_NAME = 'ELOFileExport'))
 	BEGIN
@@ -72,25 +58,6 @@ BEGIN
 			@vFileExists int,
 			@objid int; 
 
-	-- Temp - Tabelle mit allen nötigen Daten erzeugen
-	-- Nicht Exportierte Dokumente (und ohne Exportfehler) aus Migration_ELODokumente 
-	-- die unterhalb eines bestimmten Ordners (Migration_ELODokEbenen, siehe @folderid) liegen
-
-	IF OBJECT_ID('tempdb..#ExportDoks') IS NOT NULL DROP TABLE #ExportDoks
-
-	SELECT docobjguid, objid INTO #ExportDoks FROM (
-	SELECT md.docobjguid as docobjguid, md.objid as objid FROM Migration_ELODokumente MD 
-	JOIN Migration_ELODokEbenen MDE on MDE.docobjguid = MD.docobjguid
-	WHERE (exported = 0 OR exported is null) AND (exporterror = 0 OR exporterror is null)
-	AND ebenenid = @folderid) as x 
-
-
-	SELECT @total = COUNT(*) FROM #ExportDoks
-
-	IF (@total <= 0)
-	  RAISERROR ('Keine Exportierbaren Dokumente! Es gibt nichts zu tun! Stimmt die ELO - Ordner ID?', 18, 1); 
-	ELSE
-	BEGIN
   
 		--filename generieren bzw. alle Sonderzeichen entfernen
  
@@ -107,25 +74,47 @@ BEGIN
 		UPDATE Migration_ELODokumente SET [filename] = REPLACE([filename],'|','')
 		UPDATE Migration_ELODokumente SET extension = LOWER(RIGHT([path], LEN([path]) - CHARINDEX('.', [path])))  
 
+		
+		-- Temp - Tabelle mit allen nötigen Daten erzeugen
+		-- Nicht Exportierte Dokumente (und ohne Exportfehler) aus Migration_ELODokumente 
+		-- die unterhalb eines bestimmten Ordners (Migration_ELODokEbenen, siehe @folderid) liegen
+
+		IF OBJECT_ID('tempdb..#ExportDoks') IS NOT NULL DROP TABLE #ExportDoks
+
+		SELECT docobjguid, objid, docparentguid INTO #ExportDoks FROM (
+		SELECT md.docobjguid as docobjguid, md.objid as objid, mde.docparentguid FROM Migration_ELODokumente MD 
+		JOIN Migration_ELODokEbenen MDE on MDE.docobjguid = MD.docobjguid
+		WHERE (exported = 0 OR exported is null)
+		AND ebenenid = @folderid
+		) as x 
+
+		SELECT @total = COUNT(*) FROM #ExportDoks
+
+		IF (@total <= 0)
+			RAISERROR ('Keine Exportierbaren Dokumente! Es gibt nichts zu tun! Stimmt die ELO - Ordner ID?', 18, 1); 
+		ELSE
+		BEGIN
+
 		--PRINT CONCAT(@count, ' Datensätze - Zeit zum Kaffee holen?')
 		--PRINT CONCAT('Begin ', GETDATE())
 
 		--Export start
 		WHILE (SELECT COUNT(*) FROM #ExportDoks) > 0
 		BEGIN
-			SELECT TOP 1 @docobjectguid = docobjguid, @objid = [objid] FROM #ExportDoks
+		    DECLARE @docparent uniqueidentifier
+			SELECT TOP 1 @docobjectguid = docobjguid, @objid = [objid], @docparent = docparentguid FROM #ExportDoks
 
 			--Pfad erzeugen
  			SET @folderpath = (SELECT DISTINCT 
 			SUBSTRING((SELECT 
 					'\'+Replace(MDE2.ebenenname,'/','_')  AS [text()]
 					FROM Migration_ELODokEbenen MDE2
-					WHERE MDE2.docobjguid = MDE.docobjguid and ebenenguid <> @docobjectguid
+					WHERE MDE2.docobjguid = MDE.docobjguid and ebenenguid <> @docobjectguid AND mde2.docparentguid = @docparent
 					ORDER BY MDE2.ebenenposition desc
 					FOR XML PATH ('')
 				), 2, 1000) [PATH]
 				FROM Migration_ELODokEbenen MDE  
-				WHERE docobjguid = @docobjectguid)  
+				WHERE docobjguid = @docobjectguid AND mde.docparentguid = @docparent )  
 				
 			SET @folderpath = REPLACE(@folderpath,'/','')
 			SET @folderpath = REPLACE(@folderpath,':','')
@@ -168,3 +157,4 @@ BEGIN
 
 	DROP TABLE #ExportDoks  
 END
+
