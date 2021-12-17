@@ -51,7 +51,7 @@ If ((Test-Path "DatenbankVerbindung.xml") -eq $true)
      
     $conn = Select-Xml -Path DatenbankVerbindung.xml -XPath 'xml/DatabaseConnection' | ForEach-Object { $_.Node.InnerXML }
     $connectionsstring = '';
-    try { $connectionsstring = [Convert]::FromBase64String("$conn ")}
+    try { $connectionsstring = [System.Text.Encoding]::Utf8.GetString([Convert]::FromBase64String("$conn"))}
     catch { $connectionsstring = $conn; }
 
     if ($connectionsstring -eq "")

@@ -51,18 +51,26 @@ If ((Test-Path "DatenbankVerbindung.xml") -eq $true)
      
     $conn = Select-Xml -Path DatenbankVerbindung.xml -XPath 'xml/DatabaseConnection' | ForEach-Object { $_.Node.InnerXML }
     $connectionsstring = '';
-    try { $connectionsstring = [Convert]::FromBase64String("$conn ")}
-    catch { $connectionsstring = $conn; }
-
+    try { $connectionsstring = [System.Text.Encoding]::Utf8.GetString([Convert]::FromBase64String("$conn"))}
+    catch 
+    {
+         $connectionsstring = $conn; 
+         echo $connectionsstring;
+    }
     if ($connectionsstring -eq "")
     {    
         write-host "Connectionstring ist leer!" -ForegroundColor Red
         Return;
     }
 
+    $cnnBuilder = New-Object System.Data.SqlClient.SqlConnectionStringBuilder($connectionsstring)
+    $catalog = $cnnBuilder.InitialCatalog + "_ELOMigration"
+    $cnnBuilder.'Initial Catalog'=$catalog;
+    echo $cnnBuilder.InitialCatalog;
+
 
     $Connection = New-Object System.Data.SQLClient.SQLConnection
-    $Connection.ConnectionString = $connectionsstring
+    $Connection.ConnectionString = $cnnBuilder.ConnectionString;
     $Connection.Open()
     $command = $Connection.CreateCommand()
     $command.CommandTimeout = 360
@@ -73,7 +81,7 @@ If ((Test-Path "DatenbankVerbindung.xml") -eq $true)
     $command.ExecuteNonQuery()  | out-null;
     
     #proc ausführen
-    echo 'ELO Struktur Export - Script ausführen'
+    echo 'ELO Struktur Export - Script ausf�hren'
     $command.CommandType = [System.Data.CommandType]::StoredProcedure
     $command.CommandText = "dbo.#sp_CreateExport_List";
 
