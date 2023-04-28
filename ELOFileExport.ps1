@@ -1,6 +1,6 @@
 param($p1, $p2)
 
-##--Option 1 - Über ISE
+##--Option 1 - über ISE
  
 
 #--Exportordner Pfad angeben!
@@ -12,7 +12,7 @@ $OrdnerId = 0;
 #----------^^
 
 
-# Jetzt |> "Skript ausführen" oder F5 betätigen  
+# Jetzt |> "Skript ausführen" oder F5 betÃ¤tigen  
 
 ##--Option 2
 
@@ -88,7 +88,7 @@ If ((Test-Path "DatenbankVerbindung.xml") -eq $true)
     $command.ExecuteNonQuery()  | out-null;
     
     #proc ausführen
-    echo 'ELO Struktur Export - Script ausf�hren'
+    echo 'ELO Struktur Export - Script ausführen'
     $command.CommandType = [System.Data.CommandType]::StoredProcedure
     $command.CommandText = "dbo.#sp_CreateExport_List";
 
