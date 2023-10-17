@@ -1,9 +1,9 @@
 -- ###############################################################################################################################################################################################################
 --  Author   : AT
---  Geändert von       : AT
---  Datum der Änderung : 16.10.2021
+--  GeÃ¤ndert von       : AT
+--  Datum der Ã„nderung : 16.10.2021
 --  Mitwirkende        : AT
---  Kompatibilität     : 21.2.5
+--  KompatibilitÃ¤t     : 21.2.5
 -- ###############################################################################################################################################################################################################
 
  
@@ -11,12 +11,12 @@
 DECLARE @exportfolder nvarchar(max)  = 'C:\vfm\EXPORT'
 ----------------------------------------^^
 
--- ID des gewünschten Ordners angeben!
+-- ID des gewÃ¼nschten Ordners angeben!
 DECLARE @folderid int = 99999
 ------------------------^^
 
 -- #######################################################################
--- ggf. vor zurücksetzen
+-- ggf. vor zurÃ¼cksetzen
 /* 
    UPDATE Migration_ELODokumente SET exporterror = 0 WHERE exporterror = 1
    UPDATE Migration_ELODokumente SET exported = 0 WHERE exported = 1
@@ -58,7 +58,7 @@ ELSE
     DELETE FROM ELOFileExport
 
 
--- Es wird heiß, Variablen deklarieren
+-- Es wird heiÃŸ, Variablen deklarieren
 DECLARE
         @folderpath nvarchar(max),
         @copydestination nvarchar(1000),
@@ -73,7 +73,7 @@ DECLARE
 		@vFileExists int,
 		@objid int; 
 
--- Temp - Tabelle mit allen nötigen Daten erzeugen
+-- Temp - Tabelle mit allen nÃ¶tigen Daten erzeugen
 -- Nicht Exportierte Dokumente (und ohne Exportfehler) aus Migration_ELODokumente 
 -- die unterhalb eines bestimmten Ordners (Migration_ELODokEbenen, siehe @folderid) liegen
 SELECT * INTO #ExportDoks FROM (
@@ -105,7 +105,7 @@ BEGIN
 	UPDATE Migration_ELODokumente SET [filename] = REPLACE([filename],'|','')
 	UPDATE Migration_ELODokumente SET extension = LOWER(RIGHT([path], LEN([path]) - CHARINDEX('.', [path])))  
 
-	--PRINT CONCAT(@count, ' Datensätze - Zeit zum Kaffee holen?')
+	--PRINT CONCAT(@count, ' DatensÃ¤tze - Zeit zum Kaffee holen?')
 	--PRINT CONCAT('Begin ', GETDATE())
 
 	--Export start
@@ -142,7 +142,7 @@ BEGIN
 		
 		     IF (SELECT Count(*) FROM ELOFileExport WHERE (Objid = @objid)) = 0 AND (ISNULL(@filesource,'') <> '')
 			 BEGIN
-			  INSERT INTO ELOFileExport (Source, Directory, Filename, objid) Values (trim(@filesource), trim(@copydestinationfile), trim(@filename), @objid)
+			  INSERT INTO ELOFileExport (Source, Directory, Filename, objid) Values (rtrim(ltrim(@filesource)), rtrim(ltrim(@copydestinationfile)), ltrim(rtrim(@filename)), @objid)
 			  --UPDATE Migration_ELODokumente SET exported = 1 WHERE docobjguid = @docobjectguid;
 			 END
 

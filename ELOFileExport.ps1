@@ -181,7 +181,7 @@ ELSE
 
       Copy-Item -Path $file.Source -Destination $DestinationFile.Trim();
 
-      If ((Test-Path $file.Directory) -eq $true)
+      If ((Test-Path  $DestinationFile.Trim()) -eq $true)
       {
          echo ("Exportiert: "+$file.filename)
       }
