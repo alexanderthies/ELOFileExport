@@ -142,7 +142,7 @@ BEGIN
 		
 				 IF (SELECT Count(*) FROM ELOFileExport WHERE (Objid = @objid)) = 0 AND (ISNULL(@filesource,'') <> '')
 				 BEGIN
-				  INSERT INTO ELOFileExport (Source, Directory, Filename, objid) Values (trim(@filesource), trim(@copydestinationfile), trim(@filename), @objid)
+				  INSERT INTO ELOFileExport (Source, Directory, Filename, objid) Values (rtrim(ltrim(@filesource)), rtrim(ltrim(@copydestinationfile)), ltrim(rtrim(@filename)), @objid)
 				  --UPDATE Migration_ELODokumente SET exported = 1 WHERE docobjguid = @docobjectguid;
 				 END
 
